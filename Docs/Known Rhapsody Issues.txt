@@ -1,0 +1,16 @@
+Issue 1: reported: Paul Kiningham
+June 10, 2003
+Found when using V31 of codegen, by moving transitions from one state to another,
+by moving source and target to different state, Rhapsody does not know the
+target of the transition. So when a report is done no target is given, sometimes.
+Codegen 31 reports that the number of states in the config file do not match 
+the number in the model. When looking through the model text file, there are 
+transitions without targets listed.  To correct this, delete the transition
+and redraw it.
+
+January 15, 2004
+An issue was encountered where the text "Target:" is missing from the model text
+file where there is a transition with a transition action.  The model text file
+contains the transition conditions, the transition action, and the target state name
+but does not contain the text "Target:".  Codegen 32 reports that state ... is not
+found in the configuration file.  To correct this, delete the transition and redraw it.
