@@ -1,0 +1,75 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: codegen - Win32 Release--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating command line "rc.exe /l 0x409 /fo"Release/codegen.res" /d "NDEBUG" /d "_AFXDLL" "D:\Documents and Settings\UTFT9QC\My Documents\lrd\visual c++\codegen\codegen_v35\codegen.rc"" 
+Creating temporary file "D:\DOCUME~1\UTFT9QC\LOCALS~1\Temp\RSP2F4.tmp" with contents
+[
+/nologo /MD /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_AFXDLL" /D "_MBCS" /Fp"Release/codegen.pch" /Yu"stdafx.h" /Fo"Release/" /Fd"Release/" /FD /c 
+"D:\Documents and Settings\UTFT9QC\My Documents\lrd\visual c++\codegen\codegen_v35\codegen.cpp"
+"D:\Documents and Settings\UTFT9QC\My Documents\lrd\visual c++\codegen\codegen_v35\codegenDlg.cpp"
+"D:\Documents and Settings\UTFT9QC\My Documents\lrd\visual c++\codegen\codegen_v35\CommonStateClass.cpp"
+"D:\Documents and Settings\UTFT9QC\My Documents\lrd\visual c++\codegen\codegen_v35\DiagramClass.cpp"
+"D:\Documents and Settings\UTFT9QC\My Documents\lrd\visual c++\codegen\codegen_v35\File.cpp"
+"D:\Documents and Settings\UTFT9QC\My Documents\lrd\visual c++\codegen\codegen_v35\Globals.cpp"
+"D:\Documents and Settings\UTFT9QC\My Documents\lrd\visual c++\codegen\codegen_v35\ModelProcessing.cpp"
+"D:\Documents and Settings\UTFT9QC\My Documents\lrd\visual c++\codegen\codegen_v35\OutputProcessing.cpp"
+"D:\Documents and Settings\UTFT9QC\My Documents\lrd\visual c++\codegen\codegen_v35\StateClass.cpp"
+"D:\Documents and Settings\UTFT9QC\My Documents\lrd\visual c++\codegen\codegen_v35\SuperStateClass.cpp"
+"D:\Documents and Settings\UTFT9QC\My Documents\lrd\visual c++\codegen\codegen_v35\Utils.cpp"
+]
+Creating command line "cl.exe @D:\DOCUME~1\UTFT9QC\LOCALS~1\Temp\RSP2F4.tmp" 
+Creating temporary file "D:\DOCUME~1\UTFT9QC\LOCALS~1\Temp\RSP2F5.tmp" with contents
+[
+/nologo /MD /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_AFXDLL" /D "_MBCS" /Fp"Release/codegen.pch" /Yc"stdafx.h" /Fo"Release/" /Fd"Release/" /FD /c 
+"D:\Documents and Settings\UTFT9QC\My Documents\lrd\visual c++\codegen\codegen_v35\StdAfx.cpp"
+]
+Creating command line "cl.exe @D:\DOCUME~1\UTFT9QC\LOCALS~1\Temp\RSP2F5.tmp" 
+Creating temporary file "D:\DOCUME~1\UTFT9QC\LOCALS~1\Temp\RSP2F6.tmp" with contents
+[
+/nologo /subsystem:windows /incremental:no /pdb:"Release/codegen.pdb" /machine:I386 /out:"Release/codegen.exe" 
+".\Release\codegen.obj"
+".\Release\codegenDlg.obj"
+".\Release\CommonStateClass.obj"
+".\Release\DiagramClass.obj"
+".\Release\File.obj"
+".\Release\Globals.obj"
+".\Release\ModelProcessing.obj"
+".\Release\OutputProcessing.obj"
+".\Release\StateClass.obj"
+".\Release\StdAfx.obj"
+".\Release\SuperStateClass.obj"
+".\Release\Utils.obj"
+".\Release\codegen.res"
+]
+Creating command line "link.exe @D:\DOCUME~1\UTFT9QC\LOCALS~1\Temp\RSP2F6.tmp"
+<h3>Output Window</h3>
+Compiling resources...
+Compiling...
+StdAfx.cpp
+Compiling...
+codegen.cpp
+codegenDlg.cpp
+CommonStateClass.cpp
+DiagramClass.cpp
+File.cpp
+Globals.cpp
+ModelProcessing.cpp
+OutputProcessing.cpp
+StateClass.cpp
+SuperStateClass.cpp
+Utils.cpp
+Generating Code...
+Linking...
+
+
+
+<h3>Results</h3>
+codegen.exe - 0 error(s), 0 warning(s)
+</pre>
+</body>
+</html>
