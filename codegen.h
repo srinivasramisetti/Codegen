@@ -14,7 +14,7 @@
 
 #include "resource.h"		// main symbols
 
-#define CODEGEN_VERSION_STRING "codegen version v35"
+#define CODEGEN_VERSION_STRING "codegen version v35_10"
 #define MAX_AUTO_GEN_FUNCT_NAME_SIZE 32
 
 /////////////////////////////////////////////////////////////////////////////
