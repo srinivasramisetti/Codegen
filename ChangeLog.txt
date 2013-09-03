@@ -37,3 +37,8 @@ v35_9
 - Clarified the "the number of super states in the configuration file doesn't match the number of super states in the model." and the "the number of states in the configuration file doesn't match the number of states in the model." error messages to say that there is a state (or super state) mis-match and this can be caused by either a state (or super state) number mis-match or there is a state (or super state) name in the config file that doesn't match the corresponding state (or super state) in the model.
 - Modified so if a config file was selected that was previously used and version 34 compatilibility mode was previously selected and then the backwards compatilibility mode check box is de-selected, then this clears out the symbol name size limit box instead of defaulting to 32.
 - Enhanced various error messages (e.g. __STATE_MACHINE_NAME tag not found, model file does not exist, etc.) related to items in the configuration text file.
+
+v35_10 (3 September, 2013)
+- Rebuilt using Visual Studio 2008.  The 35_9 version seems to choke on PDF files exported from the new Rhapsody version; rebuilding fixed the problem.
+
+  
