@@ -255,8 +255,16 @@ void File::StoreFileLine(void)
 	OneFileLineBack_ptr = FilePointer->_ptr;
 	OneFileLineBack_cnt = FilePointer->_cnt;
 
-	fgets(&FileLineArray[0], MAX_CHARS, FilePointer);
-	FileLine = &FileLineArray[0];
+	FileLineArray[0] = '\0';
+	char* result;
+	if (NULL == fgets(&FileLineArray[0], MAX_CHARS, FilePointer))
+	{
+		FileLine = "";
+	}
+	else
+	{
+		FileLine = &FileLineArray[0];
+	}
 }
 
 //*********************************************************
