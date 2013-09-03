@@ -1,4 +1,4 @@
-//Microsoft Developer Studio generated resource script.
+// Microsoft Visual C++ generated resource script.
 //
 #include "resource.h"
 
@@ -27,18 +27,18 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 // TEXTINCLUDE
 //
 
-1 TEXTINCLUDE DISCARDABLE 
+1 TEXTINCLUDE 
 BEGIN
     "resource.h\0"
 END
 
-2 TEXTINCLUDE DISCARDABLE 
+2 TEXTINCLUDE 
 BEGIN
     "#include ""afxres.h""\r\n"
     "\0"
 END
 
-3 TEXTINCLUDE DISCARDABLE 
+3 TEXTINCLUDE 
 BEGIN
     "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
     "#define _AFX_NO_OLE_RESOURCES\r\n"
@@ -66,7 +66,7 @@ END
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDR_MAINFRAME           ICON    DISCARDABLE     "res\\codegen.ico"
+IDR_MAINFRAME           ICON                    "res\\codegen.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -74,33 +74,27 @@ IDR_MAINFRAME           ICON    DISCARDABLE     "res\\codegen.ico"
 //
 
 IDD_CODEGEN_DIALOG DIALOGEX 0, 0, 661, 102
-STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
 EXSTYLE WS_EX_APPWINDOW
 CAPTION "codegen"
-FONT 8, "MS Sans Serif"
+FONT 8, "MS Sans Serif", 0, 0, 0x1
 BEGIN
     DEFPUSHBUTTON   "Process",IDOK,554,81,50,14
     PUSHBUTTON      "Cancel",IDCANCEL,604,81,50,14
     LTEXT           "Configuration file",IDC_STATIC_CONFIG_FILE,7,17,53,8
-    CONTROL         "Transition mutual exclusion check only",
-                    IDC_CHECK_MUT_EXC_ONLY,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,7,85,137,10
-    EDITTEXT        IDC_EDIT_VERSION,569,0,85,14,ES_AUTOHSCROLL | 
-                    ES_READONLY | NOT WS_BORDER | NOT WS_TABSTOP
-    COMBOBOX        IDC_COMBO1_CONFIG_FILE,7,30,625,139,CBS_DROPDOWN | 
-                    CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "Transition mutual exclusion check only",IDC_CHECK_MUT_EXC_ONLY,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,85,137,10
+    EDITTEXT        IDC_EDIT_VERSION,459,0,195,14,ES_AUTOHSCROLL | ES_READONLY | NOT WS_BORDER | NOT WS_TABSTOP,WS_EX_RIGHT
+    COMBOBOX        IDC_COMBO1_CONFIG_FILE,7,30,625,139,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON      "...",IDC_FILE_SELECT_BUTTON,638,29,16,14
-    LTEXT           "Auto-generated symbol name size limit (e.g. transition actions, state entry, exit, activity functions, etc.)",
-                    IDC_STATIC_FUNCT_NAME_SIZE_LIMIT,238,58,193,18
+    LTEXT           "Auto-generated symbol name size limit (e.g. transition actions, state entry, exit, activity functions, etc.)",IDC_STATIC_FUNCT_NAME_SIZE_LIMIT,238,58,193,18
     EDITTEXT        IDC_EDIT1_FUNCT_NAME_SIZE_LIMIT,207,60,18,13
     GROUPBOX        "",IDC_STATIC_AUTO_GEN_GROUP,200,52,233,27
-    CONTROL         "codegen version 34 backwards compatibility mode",
-                    IDC_CHECK1_BACKWARDS_COMP_MODE,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,208,84,173,11
+    CONTROL         "codegen version 34 backwards compatibility mode",IDC_CHECK1_BACKWARDS_COMP_MODE,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,208,84,173,11
 END
 
 
-#ifndef _MAC
 /////////////////////////////////////////////////////////////////////////////
 //
 // Version
@@ -123,18 +117,13 @@ BEGIN
     BEGIN
         BLOCK "040904b0"
         BEGIN
-            VALUE "Comments", "\0"
-            VALUE "CompanyName", "\0"
-            VALUE "FileDescription", "codegen MFC Application\0"
-            VALUE "FileVersion", "1, 0, 0, 1\0"
-            VALUE "InternalName", "codegen\0"
-            VALUE "LegalCopyright", "Copyright (C) 2001\0"
-            VALUE "LegalTrademarks", "\0"
-            VALUE "OriginalFilename", "codegen.EXE\0"
-            VALUE "PrivateBuild", "\0"
-            VALUE "ProductName", "codegen Application\0"
-            VALUE "ProductVersion", "1, 0, 0, 1\0"
-            VALUE "SpecialBuild", "\0"
+            VALUE "FileDescription", "codegen MFC Application"
+            VALUE "FileVersion", "1, 0, 0, 1"
+            VALUE "InternalName", "codegen"
+            VALUE "LegalCopyright", "Copyright (C) 2001"
+            VALUE "OriginalFilename", "codegen.EXE"
+            VALUE "ProductName", "codegen Application"
+            VALUE "ProductVersion", "1, 0, 0, 1"
         END
     END
     BLOCK "VarFileInfo"
@@ -143,8 +132,6 @@ BEGIN
     END
 END
 
-#endif    // !_MAC
-
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -152,7 +139,7 @@ END
 //
 
 #ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO DISCARDABLE 
+GUIDELINES DESIGNINFO 
 BEGIN
     IDD_CODEGEN_DIALOG, DIALOG
     BEGIN
