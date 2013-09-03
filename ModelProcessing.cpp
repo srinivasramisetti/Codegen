@@ -51,6 +51,11 @@ CString ProcessModelFile(void)
             while("" == ModelFile.GetField(1))
             {
                 ModelFile.StoreFileLine();
+                if (TRUE == ModelFile.EOFCheck())
+                {
+                    Processing1 = FALSE;
+                    break;
+                }
             }
             // IF2 This is a state or super state
             if(("ActivityFunction" == ModelFile.GetField(1)) || 
