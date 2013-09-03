@@ -1,0 +1,39 @@
+v35_1
+- Handle (gracefully) if codegen.ini file is read only
+
+v35_2
+- Made the dialog box wider
+- Convert RTF to txt
+
+v35_3
+- Add deletion of the auto generated text model file
+
+v35_4
+- Corrected the handling if a super state is missing a default transition and doesn't have any transitions out (this caused a crash).
+- corrected the handling if a super state is missing a default transition and has a transition in from a non-superstate.
+- Corrected the handling if the "last" super state in a set of nested super states is missing a default transition.
+- Corrected the handling if the powerup transition goes to a super state and it is the only transition into that super state and that super state or a sub-super state (if they are nested) under it is missing a default transition.
+
+v35_5
+- Corrected issues with the illegal transition condition diagnostic reporting (previously called complex and/or logic).  Changed the error message to say "STATExxx to STATEyyy, illegal transition condition" instead of "...complex and/or logic". Under certain circumstances the text "not found in the configuration file" would be appended on to the end of the "STATExxx to STATEyyy, complex AND/OR logic" statement.  Corrected the target state of the illegal transition expression error because it would say "CONVERT_ERROR instead of the state name.  Under certain circumstances an illegal transition expression would produce a message like "The following super states have transitions in but don't have default transitions:  SUPER_STATExxx".
+- Corrected "condition value xxx not found in the configuration file" error reporting to prevent multiple "condition value xxx" statements in the "condition value xxx not found in the configuration file" error message if a transition condition expression contained more than one equals statement with the same unknown condition value.
+
+v35_6
+- Corrected if the "..." model text file button was selected then cancel was selected so this didn't clear the previous file entry in the dialog window.
+- Added support so the user can enter the maximum symbol name size for transition action, entry, activity, and exit function names.  This also affects the power-up transition action function name, trans config names, and state config names.  This version also uses three spaces for tabs in the state config structure instead of four.  Added a codegen version 34 backwards compatibility mode so if this is selected, auto-generated information is the same as codegen version 34.
+- Added state name comments in the functs.c file for each entry, activity, and exit action function.
+
+v35_7
+- Corrected if this starts and a codegen version 34 .ini file entry is the top entry in the .ini file, then "XXX" is displayed in the symbol name limit box instead of "32".
+- Corrected so an error is displayed if a super state has an entry action or exit action function.
+- Corrected so an error is displayed if a super state has an activity function if the tag "ActivityFunction" is at the beginning of the function body.
+
+v35_8
+- Modified so this creates a temporary model text file with a unique name based on time and date instead of the same name as the rtf model file file except with a txt extension.  This will generate a read only error for the auto-generated (and later deleted) temporary model text file if by chance one exists with the same name (very unlikely).  If an old .txt file is left over, this will generate a warning message but continue processing.
+- Modified so this produces an error of the model file (in the config text file) doesn't have a rtf extension.
+
+v35_9
+- Removed the warning message if an old .txt model file is found.
+- Clarified the "the number of super states in the configuration file doesn't match the number of super states in the model." and the "the number of states in the configuration file doesn't match the number of states in the model." error messages to say that there is a state (or super state) mis-match and this can be caused by either a state (or super state) number mis-match or there is a state (or super state) name in the config file that doesn't match the corresponding state (or super state) in the model.
+- Modified so if a config file was selected that was previously used and version 34 compatilibility mode was previously selected and then the backwards compatilibility mode check box is de-selected, then this clears out the symbol name size limit box instead of defaulting to 32.
+- Enhanced various error messages (e.g. __STATE_MACHINE_NAME tag not found, model file does not exist, etc.) related to items in the configuration text file.
