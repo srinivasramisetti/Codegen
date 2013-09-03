@@ -24,6 +24,9 @@ CCodegenDlg::CCodegenDlg(CWnd* pParent /*=NULL*/)
 	//{{AFX_DATA_INIT(CCodegenDlg)
 	m_CheckMutExcOnly = FALSE;
 	m_EditVersion = _T(CODEGEN_VERSION_STRING);
+	m_EditVersion += " (";
+	m_EditVersion += __DATE__;
+	m_EditVersion += ")";
 	m_ComboConfigFileData = _T("");
 	m_FunctNameSizeLimit = _T("");
 	m_BackwardCompModeSelection = FALSE;
