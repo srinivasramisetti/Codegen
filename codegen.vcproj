@@ -553,5 +553,9 @@
 		</File>
 	</Files>
 	<Globals>
+		<Global
+			Name="RESOURCE_FILE"
+			Value="codegen.rc"
+		/>
 	</Globals>
 </VisualStudioProject>

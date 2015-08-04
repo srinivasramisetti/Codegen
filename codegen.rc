@@ -92,6 +92,8 @@ BEGIN
     GROUPBOX        "",IDC_STATIC_AUTO_GEN_GROUP,200,52,233,27
     CONTROL         "codegen version 34 backwards compatibility mode",IDC_CHECK1_BACKWARDS_COMP_MODE,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,208,84,173,11
+    CONTROL         "Generate Debug/Test Code",IDC_CHECK_GEN_DEBUG_CODE,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,58,105,10
 END
 
 

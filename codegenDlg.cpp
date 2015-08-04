@@ -30,6 +30,7 @@ CCodegenDlg::CCodegenDlg(CWnd* pParent /*=NULL*/)
 	m_ComboConfigFileData = _T("");
 	m_FunctNameSizeLimit = _T("");
 	m_BackwardCompModeSelection = FALSE;
+   m_GenerateDebugCode = FALSE;
 	//}}AFX_DATA_INIT
 	// Note that LoadIcon does not require a subsequent DestroyIcon in Win32
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
@@ -45,6 +46,7 @@ void CCodegenDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_CBString(pDX, IDC_COMBO1_CONFIG_FILE, m_ComboConfigFileData);
 	DDX_Text(pDX, IDC_EDIT1_FUNCT_NAME_SIZE_LIMIT, m_FunctNameSizeLimit);
 	DDX_Check(pDX, IDC_CHECK1_BACKWARDS_COMP_MODE, m_BackwardCompModeSelection);
+	DDX_Check(pDX, IDC_CHECK_GEN_DEBUG_CODE, m_GenerateDebugCode);
 	//}}AFX_DATA_MAP
 }
 
@@ -55,6 +57,7 @@ BEGIN_MESSAGE_MAP(CCodegenDlg, CDialog)
 	ON_BN_CLICKED(IDC_FILE_SELECT_BUTTON, OnFileSelectButton)
 	ON_CBN_SELCHANGE(IDC_COMBO1_CONFIG_FILE, OnSelchangeCombo1ConfigFile)
 	ON_BN_CLICKED(IDC_CHECK1_BACKWARDS_COMP_MODE, OnCheck1BackwardsCompMode)
+	ON_BN_CLICKED(IDC_CHECK_GEN_DEBUG_CODE, OnCheckGenerateDebugCode)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
@@ -869,4 +872,16 @@ void CCodegenDlg::OnCheck1BackwardsCompMode()
 
 	// Update the window display
     UpdateData(FALSE);
+}
+
+
+///
+///  Generate Debug Code button check handler.
+///
+///  Updates the state of the GenerateDebugCode flag.
+///
+void CCodegenDlg::OnCheckGenerateDebugCode() 
+{
+   UpdateData(TRUE);
+   GenerateDebugCode = m_GenerateDebugCode;
 }
