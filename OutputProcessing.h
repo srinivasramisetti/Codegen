@@ -21,5 +21,6 @@ void OutputMainStateMachineConfig(void);
 void UpdatePublicHeaderFile(void);
 void UpdateFunctsSourceFile(void);
 void UpdatePrivateHeaderFile(void);
+void UpdateDebugSourceFile(void);
 
 #endif /* AFX_OUTPUTPROCESSING_H__A85A5564_DCDD_11D3_8625_D268D3FDEB93__INCLUDED_ */

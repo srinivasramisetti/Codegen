@@ -22,5 +22,6 @@ extern CString StateMachineName;
 
 extern int AutoGenFunctNameLimit;
 extern int BackwardCompModeSelected;
+extern BOOL GenerateDebugCode;
 
 extern SYSTEMTIME CurrentLocalTime;

@@ -28,6 +28,8 @@ CString StateMachineName;
 int AutoGenFunctNameLimit;
 // codegen version 34 backwards compatibility mode
 int BackwardCompModeSelected;
+// flag: generate debug code
+BOOL GenerateDebugCode;
 
 // Supports time stamping
 SYSTEMTIME CurrentLocalTime;

@@ -26,6 +26,7 @@ public:
 	CString	m_ComboConfigFileData;
 	CString	m_FunctNameSizeLimit;
 	BOOL	m_BackwardCompModeSelection;
+	BOOL    m_GenerateDebugCode;
 	//}}AFX_DATA
 
 	// ClassWizard generated virtual function overrides
@@ -48,6 +49,7 @@ protected:
 	afx_msg void OnFileSelectButton();
 	afx_msg void OnSelchangeCombo1ConfigFile();
 	afx_msg void OnCheck1BackwardsCompMode();
+	afx_msg void OnCheckGenerateDebugCode();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 };

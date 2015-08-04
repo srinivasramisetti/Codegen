@@ -25,6 +25,10 @@ void UpdateFSMFiles(void)
     UpdatePublicHeaderFile();
     UpdatePrivateHeaderFile();
     UpdateFunctsSourceFile();
+    if (GenerateDebugCode)
+    {
+        UpdateDebugSourceFile();
+    }
 }
 
 //****************************************************************************
@@ -42,14 +46,14 @@ void UpdateConfigSourceFile(void)
 	char TempArray[50];
     CString TempCString, TempCString2, TempCString3;
     CString TempCString4, TempCString5;
-    
+
     // Open the <FSM name>_fsm_config.h file, store it in a class array, and
     // find out how many lines are in the file.
     OutputFSMConfigFile.OpenFileForReading(FSMOutputFilesPath + StateMachineName + "_fsm_config.c");
     OutputFSMConfigFile.StoreEntireFile();
     TempFileLines = OutputFSMConfigFile.GetNumberFileLines();
     OutputFSMConfigFile.CloseFile();
-    
+
     // Create a new file with the same name (destroy the original file)
     OutputFSMConfigFile.OpenNewFile(FSMOutputFilesPath + StateMachineName + "_fsm_config.c");
     // FOR1 All lines in the file
@@ -84,15 +88,15 @@ void UpdateConfigSourceFile(void)
 
                 // Add the configuration data
 				OutputFSMConfigFile.PutString("/* State machine configuration */\n\n");
-                
+
                 // Output the transition configuration structures for all states
                 // FOR2 All states
                 for(jj = 0; jj < Diagram.GetNumStates(NON_SUPER_STATE); jj++)
                 {
                     // Output the beginning of the trans config for the current state
                     TempCString = ConvertStateNumberToText(jj);
-                    OutputTransBeg(TempCString);            
-                    
+                    OutputTransBeg(TempCString);
+
                     // Output all of the transitions (in C file format)
                     // FOR3 All transitions
                     for(kk = 0; kk < Diagram.GetNumTrans(NON_SUPER_STATE, jj); kk++)
@@ -109,15 +113,15 @@ void UpdateConfigSourceFile(void)
                                 Diagram.GetTransActionFunctionName(NON_SUPER_STATE, jj, kk));
                         }
                     } // END FOR3
-                    
+
                     // Output the end of the trans config structure
                     OutputTransEnd();
                 } // END FOR2
-                
+
                 // Output the state configuration structures for all states
                 // Start with the beginning of the state config structure
                 OutputStateBeg(StateMachineName);
-                
+
                 // Output all of the states (in C file format)
                 // FOR7 All states
                 for(jj = 0; jj < Diagram.GetNumStates(NON_SUPER_STATE); jj++)
@@ -128,7 +132,7 @@ void UpdateConfigSourceFile(void)
                 OutputStateEnd();
                 // Output the state machine main configuration
                 OutputMainStateMachineConfig();
-                
+
                 OutputFSMConfigFile.PutString("/*__END_AUTO_GEN_AREA*/");
                 OutputFSMConfigFile.PutChar('\n');
                 State = LOOKING_FOR_END_AUTO_GEN_AREA;
@@ -163,8 +167,17 @@ void UpdateConfigSourceFile(void)
 //****************************************************************************
 void OutputTimeStampAndInfo(File FileToUpdate)
 {
+// Change this to 1 to generate dummy date/time and file and file names.
+// (Useful for comparing results vs. a golden benchmark file.)
+#if (0)
+	FileToUpdate.PutString("/* Generated at hh:mm on dd/mm/yyyy using the following files:\n");
+    FileToUpdate.PutString("   ");
+    FileToUpdate.PutString(CODEGEN_VERSION_STRING);
+    FileToUpdate.PutString('\n');
+    FileToUpdate.PutString("   Model file: (ModelFile)\n");
+    FileToUpdate.PutString("   Config file: (ConfigFile) */\n\n");
+#else
 	char TempArray[50];
-
     FileToUpdate.PutString("/* Generated at ");
     FileToUpdate.PutString(_itoa(CurrentLocalTime.wHour, &TempArray[0], 10));
     FileToUpdate.PutString(":");
@@ -181,6 +194,7 @@ void OutputTimeStampAndInfo(File FileToUpdate)
     FileToUpdate.PutString('\n');
     FileToUpdate.PutString("   Model file: " + ModelFile.GetFileName() + '\n');
     FileToUpdate.PutString("   Config file: " + ConfigFile.GetFileName() + " */\n\n");
+#endif
 }
 
 //****************************************************************************
@@ -198,12 +212,12 @@ void OutputTransBeg(CString StateName)
     OutputFSMConfigFile.PutString("/* ");
     OutputFSMConfigFile.PutString(TempCString);
     OutputFSMConfigFile.PutString(" state transition configuration */");
-    OutputFSMConfigFile.PutChar('\n');   
+    OutputFSMConfigFile.PutChar('\n');
     OutputFSMConfigFile.PutString("const FSM_TRANS_CONFIG_T ");
 	// IF1 codegen version 34 backwards compatibility mode is selected
 	if(TRUE == BackwardCompModeSelected)
 	{ // THEN1 Don't limit the name size
-		OutputFSMConfigFile.PutString(TempCString);    
+		OutputFSMConfigFile.PutString(TempCString);
 	}
 	else
 	{ // ELSE1 Limit the name size taking into account the "_trans_config"
@@ -211,7 +225,7 @@ void OutputTransBeg(CString StateName)
 		TempCString2 = TempCString.Right(AutoGenFunctNameLimit-13);
 		// The CStringFirstCharCheck call makes sure the first character
 		// is not an underscore or a number
-		OutputFSMConfigFile.PutString(CStringFirstCharCheck(TempCString2));    
+		OutputFSMConfigFile.PutString(CStringFirstCharCheck(TempCString2));
 	}
 	OutputFSMConfigFile.PutString("_trans_config[] =");
     OutputFSMConfigFile.PutChar('\n');
@@ -374,7 +388,7 @@ void OutputState(CString StateName)
 			OutputFSMConfigFile.PutString("        0,");
 		}
 		OutputFSMConfigFile.PutChar('\n');
-		
+
 		OutputFSMConfigFile.PutString("        &");
 		OutputFSMConfigFile.PutString(StateName);
 		OutputFSMConfigFile.PutString("_trans_config[0]");
@@ -436,7 +450,7 @@ void OutputState(CString StateName)
 			OutputFSMConfigFile.PutString("      0,");
 		}
 		OutputFSMConfigFile.PutChar('\n');
-		
+
 		OutputFSMConfigFile.PutString("      &");
 		TempCString = StateName.Right(AutoGenFunctNameLimit-13);
 		// The CStringFirstCharCheck call makes sure the first character
@@ -585,7 +599,7 @@ void UpdatePublicHeaderFile(void)
 				OutputFSMPublicFile.PutString("extern const FSM_CONFIG_T ");
 				OutputFSMPublicFile.PutString(StateMachineName);
 				OutputFSMPublicFile.PutString("_fsm_config;\n\n");
-				
+
 				// Add the #define state list
                 OutputFSMPublicFile.PutString("/* State machine #define list of states */\n");
                 for(jj = 0; jj < Diagram.GetNumStates(NON_SUPER_STATE); jj++)
@@ -654,7 +668,7 @@ void UpdatePrivateHeaderFile(void)
                 // the /*__BEG_AUTO_GEN_AREA*/ marker
                 TempCString = OutputFSMPrivateFile.GetEntireFileLine(ii);
                 TempCString.Remove('\n');
-				// IF1 The marker was found
+                // IF1 The marker was found
                 if("/*__BEG_AUTO_GEN_AREA*/" == TempCString)
                 { // THEN1 Change states
                     State = ADDING_AUTO_GEN_DATA;
@@ -665,18 +679,18 @@ void UpdatePrivateHeaderFile(void)
         case(ADDING_AUTO_GEN_DATA):
             { // Add time stamp information
                 OutputTimeStampAndInfo(OutputFSMPrivateFile);
-				
-				// Add transition input word extern
-                OutputFSMPrivateFile.PutString("/* Transition input word extern */\n");
-				OutputFSMPrivateFile.PutString("extern U32_T ");
-				OutputFSMPrivateFile.PutString(StateMachineName);
-				OutputFSMPrivateFile.PutString("_fsm_trans_input;\n\n");
 
-				// Add input word processing function prototype
+                // Add transition input word extern
+                OutputFSMPrivateFile.PutString("/* Transition input word extern */\n");
+                OutputFSMPrivateFile.PutString("extern U32_T ");
+                OutputFSMPrivateFile.PutString(StateMachineName);
+                OutputFSMPrivateFile.PutString("_fsm_trans_input;\n\n");
+
+                // Add input word processing function prototype
                 OutputFSMPrivateFile.PutString("/* Input word processing function prototype */\n");
-				OutputFSMPrivateFile.PutString("void ");
-				OutputFSMPrivateFile.PutString(StateMachineName);
-				OutputFSMPrivateFile.PutString("_fsm_process_inputs(void);\n\n");
+                OutputFSMPrivateFile.PutString("void ");
+                OutputFSMPrivateFile.PutString(StateMachineName);
+                OutputFSMPrivateFile.PutString("_fsm_process_inputs(void);\n\n");
 
                 // Add the powerup transition action
                 OutputFSMPrivateFile.PutString("/* Powerup transition action prototype */\n");
@@ -684,20 +698,28 @@ void UpdatePrivateHeaderFile(void)
                 if("" != Diagram.GetPowerupTransAction())
                 { // THEN1 Add powerup transition action prototype
                     OutputFSMPrivateFile.PutString("void ");
-					// IF11 codegen version 34 backwards compatibility mode is selected
-					if(TRUE == BackwardCompModeSelected)
-					{ // THEN11 Don't limit the name size
-						OutputFSMPrivateFile.PutString(StateMachineName);
-					}
-					else
-					{ // ELSE11 Limit the name size taking into account the "_fsm_powerup_trans"
-						// text appended to the end
-						TempCString = StateMachineName.Right(AutoGenFunctNameLimit-18);
-						// The CStringFirstCharCheck call makes sure the first character
-						// is not an underscore or a number
-						OutputFSMPrivateFile.PutString(CStringFirstCharCheck(TempCString));
-					}
+                    // IF11 codegen version 34 backwards compatibility mode is selected
+                    if(TRUE == BackwardCompModeSelected)
+                    { // THEN11 Don't limit the name size
+                        OutputFSMPrivateFile.PutString(StateMachineName);
+                    }
+                    else
+                    { // ELSE11 Limit the name size taking into account the "_fsm_powerup_trans"
+                        // text appended to the end
+                        TempCString = StateMachineName.Right(AutoGenFunctNameLimit-18);
+                        // The CStringFirstCharCheck call makes sure the first character
+                        // is not an underscore or a number
+                        OutputFSMPrivateFile.PutString(CStringFirstCharCheck(TempCString));
+                    }
                     OutputFSMPrivateFile.PutString("_fsm_powerup_trans(void);\n");
+                    if (GenerateDebugCode)
+                    {
+                        OutputFSMPrivateFile.PutString("#ifdef FSM_DEBUG\n");
+                        OutputFSMPrivateFile.PutString("int FSM_DebugHook_");
+                        OutputFSMPrivateFile.PutString(StateMachineName);
+                        OutputFSMPrivateFile.PutString("_fsm_powerup_trans(void);\n");
+                        OutputFSMPrivateFile.PutString("#endif /* FSM_DEBUG */\n\n");
+                    }
                 }
 
                 // Add entry action prototypes
@@ -710,21 +732,29 @@ void UpdatePrivateHeaderFile(void)
                         OutputFSMPrivateFile.PutString("void ");
                         TempCString2 = ConvertStateNumberToText(jj);
                         TempCString2.MakeLower();
-						// IF22 codegen version 34 backwards compatibility mode is selected
-						if(TRUE == BackwardCompModeSelected)
-						{ // THEN22 Don't limit the name size
-							OutputFSMPrivateFile.PutString(TempCString2);
-						}
-						else
-						{ // ELSE22 Limit the name size taking into account the "_entry"
-							// text appended to the end
-							TempCString3 = TempCString2.Right(AutoGenFunctNameLimit-6);
-							// The CStringFirstCharCheck call makes sure the first character
-							// is not an underscore or a number
-							OutputFSMPrivateFile.PutString(CStringFirstCharCheck(TempCString3));
-						}
+                        // IF22 codegen version 34 backwards compatibility mode is selected
+                        if(TRUE == BackwardCompModeSelected)
+                        { // THEN22 Don't limit the name size
+                            OutputFSMPrivateFile.PutString(TempCString2);
+                        }
+                        else
+                        { // ELSE22 Limit the name size taking into account the "_entry"
+                            // text appended to the end
+                            TempCString3 = TempCString2.Right(AutoGenFunctNameLimit-6);
+                            // The CStringFirstCharCheck call makes sure the first character
+                            // is not an underscore or a number
+                            OutputFSMPrivateFile.PutString(CStringFirstCharCheck(TempCString3));
+                        }
                         OutputFSMPrivateFile.PutString("_entry(void);");
                         OutputFSMPrivateFile.PutChar('\n');
+                        if (GenerateDebugCode)
+                        {
+                            OutputFSMPrivateFile.PutString("#ifdef FSM_DEBUG\n");
+                            OutputFSMPrivateFile.PutString("int FSM_DebugHook_");
+                            OutputFSMPrivateFile.PutString(TempCString2);
+                            OutputFSMPrivateFile.PutString("_entry(void);\n");
+                            OutputFSMPrivateFile.PutString("#endif /* FSM_DEBUG */\n");
+                        }
                     }
                 } // END FOR1
 
@@ -738,21 +768,29 @@ void UpdatePrivateHeaderFile(void)
                         OutputFSMPrivateFile.PutString("void ");
                         TempCString2 = ConvertStateNumberToText(jj);
                         TempCString2.MakeLower();
-						// IF33 codegen version 34 backwards compatibility mode is selected
-						if(TRUE == BackwardCompModeSelected)
-						{ // THEN33 Don't limit the name size
-							OutputFSMPrivateFile.PutString(TempCString2);
-						}
-						else
-						{ // ELSE33 Limit the name size taking into account the "_act"
-							// text appended to the end
-							TempCString3 = TempCString2.Right(AutoGenFunctNameLimit-4);
-							// The CStringFirstCharCheck call makes sure the first character
-							// is not an underscore or a number
-							OutputFSMPrivateFile.PutString(CStringFirstCharCheck(TempCString3));
-						}
+                        // IF33 codegen version 34 backwards compatibility mode is selected
+                        if(TRUE == BackwardCompModeSelected)
+                        { // THEN33 Don't limit the name size
+                            OutputFSMPrivateFile.PutString(TempCString2);
+                        }
+                        else
+                        { // ELSE33 Limit the name size taking into account the "_act"
+                            // text appended to the end
+                            TempCString3 = TempCString2.Right(AutoGenFunctNameLimit-4);
+                            // The CStringFirstCharCheck call makes sure the first character
+                            // is not an underscore or a number
+                            OutputFSMPrivateFile.PutString(CStringFirstCharCheck(TempCString3));
+                        }
                         OutputFSMPrivateFile.PutString("_act(void);");
                         OutputFSMPrivateFile.PutChar('\n');
+                        if (GenerateDebugCode)
+                        {
+                            OutputFSMPrivateFile.PutString("#ifdef FSM_DEBUG\n");
+                            OutputFSMPrivateFile.PutString("int FSM_DebugHook_");
+                            OutputFSMPrivateFile.PutString(TempCString2);
+                            OutputFSMPrivateFile.PutString("_act(void);\n");
+                            OutputFSMPrivateFile.PutString("#endif /* FSM_DEBUG */\n");
+                        }
                     }
                 } // END FOR2
 
@@ -766,21 +804,29 @@ void UpdatePrivateHeaderFile(void)
                         OutputFSMPrivateFile.PutString("void ");
                         TempCString2 = ConvertStateNumberToText(jj);
                         TempCString2.MakeLower();
-						// IF44 codegen version 34 backwards compatibility mode is selected
-						if(TRUE == BackwardCompModeSelected)
-						{ // THEN44 Don't limit the name size
-							OutputFSMPrivateFile.PutString(TempCString2);
-						}
-						else
-						{ // ELSE44 Limit the name size taking into account the "_exit"
-							// text appended to the end
-							TempCString3 = TempCString2.Right(AutoGenFunctNameLimit-5);
-							// The CStringFirstCharCheck call makes sure the first character
-							// is not an underscore or a number
-							OutputFSMPrivateFile.PutString(CStringFirstCharCheck(TempCString3));
-						}
+                        // IF44 codegen version 34 backwards compatibility mode is selected
+                        if(TRUE == BackwardCompModeSelected)
+                        { // THEN44 Don't limit the name size
+                            OutputFSMPrivateFile.PutString(TempCString2);
+                        }
+                        else
+                        { // ELSE44 Limit the name size taking into account the "_exit"
+                            // text appended to the end
+                            TempCString3 = TempCString2.Right(AutoGenFunctNameLimit-5);
+                            // The CStringFirstCharCheck call makes sure the first character
+                            // is not an underscore or a number
+                            OutputFSMPrivateFile.PutString(CStringFirstCharCheck(TempCString3));
+                        }
                         OutputFSMPrivateFile.PutString("_exit(void);");
                         OutputFSMPrivateFile.PutChar('\n');
+                        if (GenerateDebugCode)
+                        {
+                            OutputFSMPrivateFile.PutString("#ifdef FSM_DEBUG\n");
+                            OutputFSMPrivateFile.PutString("int FSM_DebugHook_");
+                            OutputFSMPrivateFile.PutString(TempCString2);
+                            OutputFSMPrivateFile.PutString("_exit(void);\n");
+                            OutputFSMPrivateFile.PutString("#endif /* FSM_DEBUG */\n");
+                        }
                     }
                 } // END FOR3
 
@@ -800,7 +846,14 @@ void UpdatePrivateHeaderFile(void)
                             TempCString += Diagram.GetTransActionFunctionName(NON_SUPER_STATE, jj, kk);
                             TempCString += "(void);";
                             TempCString += '\n';
-
+                            if (GenerateDebugCode)
+                            {
+                                TempCString += "#ifdef FSM_DEBUG\n";
+                                TempCString += "int FSM_DebugHook_";
+                                TempCString += Diagram.GetTransActionFunctionName(NON_SUPER_STATE, jj, kk);
+                                TempCString += "(void);\n";
+                                TempCString += "#endif /* FSM_DEBUG */\n";
+                            }
                             // IF6 The transaction function is not already there
                             if(-1 == TempCString2.Find(TempCString))
                             { // THEN6 Add it to the temporary string
@@ -822,7 +875,7 @@ void UpdatePrivateHeaderFile(void)
                 // Ignore all "old" lines up until the /*__END_AUTO_GEN_AREA*/ marker
                 TempCString = OutputFSMPrivateFile.GetEntireFileLine(ii);
                 TempCString.Remove('\n');
-				// IF6 The marker was found
+                // IF6 The marker was found
                 if("/*__END_AUTO_GEN_AREA*/" == TempCString)
                 { // THEN6 Change states
                     State = FINISHING_UP;
@@ -872,7 +925,7 @@ void UpdateFunctsSourceFile(void)
                 // the /*__BEG_AUTO_GEN_AREA*/ marker
                 TempCString = OutputFSMFunctsFile.GetEntireFileLine(ii);
                 TempCString.Remove('\n');
-				// IF1 The marker was found
+                // IF1 The marker was found
                 if("/*__BEG_AUTO_GEN_AREA*/" == TempCString)
                 { // THEN1 Change states
                     State = ADDING_AUTO_GEN_DATA;
@@ -890,58 +943,91 @@ void UpdateFunctsSourceFile(void)
                 if("" != Diagram.GetPowerupTransAction())
                 { // THEN2 Add powerup transition action prototype
                     OutputFSMFunctsFile.PutString("void ");
-					// IF22 codegen version 34 backwards compatibility mode is selected
-					if(TRUE == BackwardCompModeSelected)
-					{ // THEN22 Don't limit the name size
-						OutputFSMFunctsFile.PutString(StateMachineName);
-					}
-					else
-					{ // ELSE22 Limit the name size taking into account the "_fsm_powerup_trans"
-						// text appended to the end
-						TempCString5 = StateMachineName.Right(AutoGenFunctNameLimit-18);
-						// The CStringFirstCharCheck call makes sure the first character
-						// is not an underscore or a number
-						OutputFSMFunctsFile.PutString(CStringFirstCharCheck(TempCString5));
-					}
+                    // IF22 codegen version 34 backwards compatibility mode is selected
+                    if(TRUE == BackwardCompModeSelected)
+                    { // THEN22 Don't limit the name size
+                        OutputFSMFunctsFile.PutString(StateMachineName);
+                    }
+                    else
+                    { // ELSE22 Limit the name size taking into account the "_fsm_powerup_trans"
+                        // text appended to the end
+                        TempCString5 = StateMachineName.Right(AutoGenFunctNameLimit-18);
+                        // The CStringFirstCharCheck call makes sure the first character
+                        // is not an underscore or a number
+                        OutputFSMFunctsFile.PutString(CStringFirstCharCheck(TempCString5));
+                    }
                     OutputFSMFunctsFile.PutString("_fsm_powerup_trans(void)\n");
                     OutputFSMFunctsFile.PutString("{\n");
+                    if (GenerateDebugCode)
+                    {
+                        OutputFSMFunctsFile.PutString("#ifdef FSM_DEBUG\n");
+                        OutputFSMFunctsFile.PutString("   FSM_DebugHook_");
+                        OutputFSMFunctsFile.PutString(StateMachineName);
+                        OutputFSMFunctsFile.PutString("_fsm_powerup_trans();\n");
+                        OutputFSMFunctsFile.PutString("#endif /* FSM_DEBUG */\n");
+                    }
                     OutputFSMFunctsFile.PutString(Diagram.GetPowerupTransAction());
                     OutputFSMFunctsFile.PutString("}\n\n");
                 }
-
+#if 0
+                else
+                {
+                    if (GenerateDebugCode)
+                    {
+                        OutputFSMFunctsFile.PutString("#ifdef FSM_DEBUG\n");
+                        OutputFSMFunctsFile.PutString("void ");
+                        OutputFSMFunctsFile.PutString(StateMachineName);
+                        OutputFSMFunctsFile.PutString("_fsm_powerup_trans(void)\n");
+                        OutputFSMFunctsFile.PutString("{\n");
+                        OutputFSMFunctsFile.PutString("   FSM_DebugHook_");
+                        OutputFSMFunctsFile.PutString(StateMachineName);
+                        OutputFSMFunctsFile.PutString("_fsm_powerup_trans();\n");
+                        OutputFSMFunctsFile.PutString("}\n");
+                        OutputFSMFunctsFile.PutString("#endif /* FSM_DEBUG */\n\n");
+                    }
+                }
+#endif
                 // Add the entry actions
                 OutputFSMFunctsFile.PutString("\n/* Entry action function definitions */\n");
                 for(jj = 0; jj < Diagram.GetNumStates(NON_SUPER_STATE); jj++)
                 {
-					// IF3 There is an entry action function
+                    // IF3 There is an entry action function
                     if("" != Diagram.GetEntryAction(jj))
                     { // THEN3 Add the function
                         TempCString = ConvertStateNumberToText(jj);
-						// IF333 codegen version 34 backwards compatibility mode is not selected
-						if(FALSE == BackwardCompModeSelected)
-						{ // THEN333 Output a function comment first
-							TempCString4 = "/* ";
-							TempCString4 += TempCString;
-							TempCString4 += " entry action function definition */";
-							TempCString4 += '\n';
-							OutputFSMFunctsFile.PutString(TempCString4);
-						}
-						OutputFSMFunctsFile.PutString("void ");
+                        // IF333 codegen version 34 backwards compatibility mode is not selected
+                        if(FALSE == BackwardCompModeSelected)
+                        { // THEN333 Output a function comment first
+                            TempCString4 = "/* ";
+                            TempCString4 += TempCString;
+                            TempCString4 += " entry action function definition */";
+                            TempCString4 += '\n';
+                            OutputFSMFunctsFile.PutString(TempCString4);
+                        }
+                        OutputFSMFunctsFile.PutString("void ");
                         TempCString.MakeLower();
-						// IF33 codegen version 34 backwards compatibility mode is selected
-						if(TRUE == BackwardCompModeSelected)
-						{ // THEN33 Don't limit the name size
-						OutputFSMFunctsFile.PutString(TempCString);
-					}
-					else
-					{ // ELSE33 Limit the name size taking into account the "_entry"
-						// text appended to the end
-						TempCString5 = TempCString.Right(AutoGenFunctNameLimit-6);
-						// The CStringFirstCharCheck call makes sure the first character
-						// is not an underscore or a number
-						OutputFSMFunctsFile.PutString(CStringFirstCharCheck(TempCString5));
-					}
+                        // IF33 codegen version 34 backwards compatibility mode is selected
+                        if(TRUE == BackwardCompModeSelected)
+                        { // THEN33 Don't limit the name size
+                            OutputFSMFunctsFile.PutString(TempCString);
+                        }
+                        else
+                        { // ELSE33 Limit the name size taking into account the "_entry"
+                            // text appended to the end
+                            TempCString5 = TempCString.Right(AutoGenFunctNameLimit-6);
+                            // The CStringFirstCharCheck call makes sure the first character
+                            // is not an underscore or a number
+                            OutputFSMFunctsFile.PutString(CStringFirstCharCheck(TempCString5));
+                        }
                         OutputFSMFunctsFile.PutString("_entry(void)\n{\n");
+                        if (GenerateDebugCode)
+                        {
+                            OutputFSMFunctsFile.PutString("#ifdef FSM_DEBUG\n");
+                            OutputFSMFunctsFile.PutString("   FSM_DebugHook_");
+                            OutputFSMFunctsFile.PutString(TempCString);
+                            OutputFSMFunctsFile.PutString("_entry();\n");
+                            OutputFSMFunctsFile.PutString("#endif /* FSM_DEBUG */\n");
+                        }
                         OutputFSMFunctsFile.PutString(Diagram.GetEntryAction(jj));
                         OutputFSMFunctsFile.PutString("}\n\n");
                     }
@@ -951,38 +1037,46 @@ void UpdateFunctsSourceFile(void)
                 OutputFSMFunctsFile.PutString("\n/* Activity function definitions */\n");
                 for(jj = 0; jj < Diagram.GetNumStates(NON_SUPER_STATE); jj++)
                 {
-					// IF4 There is an activity function
+                    // IF4 There is an activity function
                     if("" != Diagram.GetActivityFunction(jj))
                     { // THEN4 Add the function
                         TempCString = ConvertStateNumberToText(jj);
-						// IF444 codegen version 34 backwards compatibility mode is not selected
-						if(FALSE == BackwardCompModeSelected)
-						{ // THEN444 Output a function comment first
-							TempCString4 = "/* ";
-							TempCString4 += TempCString;
-							TempCString4 += " activity function definition */";
-							TempCString4 += '\n';
-							OutputFSMFunctsFile.PutString(TempCString4);
-						}
+                        // IF444 codegen version 34 backwards compatibility mode is not selected
+                        if(FALSE == BackwardCompModeSelected)
+                        { // THEN444 Output a function comment first
+                            TempCString4 = "/* ";
+                            TempCString4 += TempCString;
+                            TempCString4 += " activity function definition */";
+                            TempCString4 += '\n';
+                            OutputFSMFunctsFile.PutString(TempCString4);
+                        }
                         OutputFSMFunctsFile.PutString("void ");
                         TempCString.MakeLower();
-						// IF44 codegen version 34 backwards compatibility mode is selected
-						if(TRUE == BackwardCompModeSelected)
-						{ // THEN44 Don't limit the name size
-							OutputFSMFunctsFile.PutString(TempCString);
-						}
-						else
-						{ // ELSE44 Limit the name size taking into account the "_act"
-							// text appended to the end
-							TempCString5 = TempCString.Right(AutoGenFunctNameLimit-4);
-							// The CStringFirstCharCheck call makes sure the first character
-							// is not an underscore or a number
-							OutputFSMFunctsFile.PutString(CStringFirstCharCheck(TempCString5));
-						}
+                        // IF44 codegen version 34 backwards compatibility mode is selected
+                        if(TRUE == BackwardCompModeSelected)
+                        { // THEN44 Don't limit the name size
+                            OutputFSMFunctsFile.PutString(TempCString);
+                        }
+                        else
+                        { // ELSE44 Limit the name size taking into account the "_act"
+                            // text appended to the end
+                            TempCString5 = TempCString.Right(AutoGenFunctNameLimit-4);
+                            // The CStringFirstCharCheck call makes sure the first character
+                            // is not an underscore or a number
+                            OutputFSMFunctsFile.PutString(CStringFirstCharCheck(TempCString5));
+                        }
                         OutputFSMFunctsFile.PutString("_act(void)");
                         OutputFSMFunctsFile.PutChar('\n');
                         OutputFSMFunctsFile.PutChar('{');
                         OutputFSMFunctsFile.PutChar('\n');
+                        if (GenerateDebugCode)
+                        {
+                            OutputFSMFunctsFile.PutString("#ifdef FSM_DEBUG\n");
+                            OutputFSMFunctsFile.PutString("   FSM_DebugHook_");
+                            OutputFSMFunctsFile.PutString(TempCString);
+                            OutputFSMFunctsFile.PutString("_act();\n");
+                            OutputFSMFunctsFile.PutString("#endif /* FSM_DEBUG */\n");
+                        }
                         OutputFSMFunctsFile.PutString(Diagram.GetActivityFunction(jj));
                         OutputFSMFunctsFile.PutChar('}');
                         OutputFSMFunctsFile.PutChar('\n');
@@ -994,38 +1088,46 @@ void UpdateFunctsSourceFile(void)
                 OutputFSMFunctsFile.PutString("\n/* Exit action function definitions */\n");
                 for(jj = 0; jj < Diagram.GetNumStates(NON_SUPER_STATE); jj++)
                 {
-					// IF5 There is an exit action function
+                    // IF5 There is an exit action function
                     if("" != Diagram.GetExitAction(jj))
                     { // THEN5 Add the function
                         TempCString = ConvertStateNumberToText(jj);
-						// IF555 codegen version 34 backwards compatibility mode is not selected
-						if(FALSE == BackwardCompModeSelected)
-						{ // THEN555 Output a function comment first
-							TempCString4 = "/* ";
-							TempCString4 += TempCString;
-							TempCString4 += " exit action function definition */";
-							TempCString4 += '\n';
-							OutputFSMFunctsFile.PutString(TempCString4);
-						}
+                        // IF555 codegen version 34 backwards compatibility mode is not selected
+                        if(FALSE == BackwardCompModeSelected)
+                        { // THEN555 Output a function comment first
+                            TempCString4 = "/* ";
+                            TempCString4 += TempCString;
+                            TempCString4 += " exit action function definition */";
+                            TempCString4 += '\n';
+                            OutputFSMFunctsFile.PutString(TempCString4);
+                        }
                         OutputFSMFunctsFile.PutString("void ");
                         TempCString.MakeLower();
-						// IF55 codegen version 34 backwards compatibility mode is selected
-						if(TRUE == BackwardCompModeSelected)
-						{ // THEN55 Don't limit the name size
-							OutputFSMFunctsFile.PutString(TempCString);
-						}
-						else
-						{ // ELSE55 Limit the name size taking into account the "_exit"
-							// text appended to the end
-							TempCString5 = TempCString.Right(AutoGenFunctNameLimit-5);
-							// The CStringFirstCharCheck call makes sure the first character
-							// is not an underscore or a number
-							OutputFSMFunctsFile.PutString(CStringFirstCharCheck(TempCString5));
-						}
+                        // IF55 codegen version 34 backwards compatibility mode is selected
+                        if(TRUE == BackwardCompModeSelected)
+                        { // THEN55 Don't limit the name size
+                            OutputFSMFunctsFile.PutString(TempCString);
+                        }
+                        else
+                        { // ELSE55 Limit the name size taking into account the "_exit"
+                            // text appended to the end
+                            TempCString5 = TempCString.Right(AutoGenFunctNameLimit-5);
+                            // The CStringFirstCharCheck call makes sure the first character
+                            // is not an underscore or a number
+                            OutputFSMFunctsFile.PutString(CStringFirstCharCheck(TempCString5));
+                        }
                         OutputFSMFunctsFile.PutString("_exit(void)");
                         OutputFSMFunctsFile.PutChar('\n');
                         OutputFSMFunctsFile.PutChar('{');
                         OutputFSMFunctsFile.PutChar('\n');
+                        if (GenerateDebugCode)
+                        {
+                            OutputFSMFunctsFile.PutString("#ifdef FSM_DEBUG\n");
+                            OutputFSMFunctsFile.PutString("   FSM_DebugHook_");
+                            OutputFSMFunctsFile.PutString(TempCString);
+                            OutputFSMFunctsFile.PutString("_exit();\n");
+                            OutputFSMFunctsFile.PutString("#endif /* FSM_DEBUG */\n");
+                        }
                         OutputFSMFunctsFile.PutString(Diagram.GetExitAction(jj));
                         OutputFSMFunctsFile.PutChar('}');
                         OutputFSMFunctsFile.PutChar('\n');
@@ -1079,6 +1181,14 @@ void UpdateFunctsSourceFile(void)
                             TempCString += '\n';
                             TempCString += '{';
                             TempCString += '\n';
+                            if (GenerateDebugCode)
+                            {
+                                TempCString += "#ifdef FSM_DEBUG\n";
+                                TempCString += "   FSM_DebugHook_";
+                                TempCString += Diagram.GetTransActionFunctionName(NON_SUPER_STATE, jj, kk);
+                                TempCString += "();\n";
+                                TempCString += "#endif /* FSM_DEBUG */\n";
+                            }
                             TempCString += Diagram.GetTransActionFunctionBody(NON_SUPER_STATE, jj, kk);
                             TempCString += '}';
                             TempCString += '\n';
@@ -1107,7 +1217,7 @@ void UpdateFunctsSourceFile(void)
                 // Ignore all "old" lines up until the /*__END_AUTO_GEN_AREA*/ marker
                 TempCString = OutputFSMFunctsFile.GetEntireFileLine(ii);
                 TempCString.Remove('\n');
-				// IF6 The marker is found
+                // IF6 The marker is found
                 if("/*__END_AUTO_GEN_AREA*/" == TempCString)
                 { // THEN6 Change states
                     State = FINISHING_UP;
@@ -1122,4 +1232,176 @@ void UpdateFunctsSourceFile(void)
             }
         }
     }
+}
+
+
+//****************************************************************************
+// Name:  UpdateDebugSourceFile
+//
+// This generates the ..._fsm_debug.txt file with all of the entry, activity,
+// exit, and transition action debug hook functions (stubs).
+//****************************************************************************
+void UpdateDebugSourceFile(void)
+{
+    File outFile;
+    CString TempCString;
+
+    // Create a new file with the same name (destroy the original file)
+    outFile.OpenNewFile(FSMOutputFilesPath + StateMachineName + "_fsm_debug.txt");
+    OutputTimeStampAndInfo(outFile);
+
+    // Add the powerup transition action
+    if("" != Diagram.GetPowerupTransAction())
+    {
+        outFile.PutString("\n");
+        outFile.PutString("\n");
+        outFile.PutString("/*\n");
+        outFile.PutString(" * FSB Debug Hook Function for Powerup transition action.\n");
+        outFile.PutString(" */\n");
+        outFile.PutString("int FSM_DebugHook_");
+        outFile.PutString(StateMachineName);
+        outFile.PutString("_fsm_powerup_trans(void)\n");
+        outFile.PutString("{\n");
+        outFile.PutString("   // fprintf(stdout, \"");
+        outFile.PutString(StateMachineName);
+        outFile.PutString("_fsm_powerup_trans()\\n\");\n");
+        outFile.PutString("   // fflush(stdout);\n");
+        outFile.PutString("   return 0;\n");
+        outFile.PutString("}\n");
+    }
+
+    // Add the entry actions
+    for(int jj = 0; jj < Diagram.GetNumStates(NON_SUPER_STATE); jj++)
+    {
+        if("" != Diagram.GetEntryAction(jj))
+        {
+            TempCString = ConvertStateNumberToText(jj);
+            TempCString.MakeLower();
+            outFile.PutString("\n");
+            outFile.PutString("\n");
+            outFile.PutString("/*\n");
+            outFile.PutString(" * FSB Debug Hook Function for ");
+            outFile.PutString(TempCString);
+            outFile.PutString("_entry().\n");
+            outFile.PutString(" */\n");
+            outFile.PutString("int FSM_DebugHook_");
+            outFile.PutString(TempCString);
+            outFile.PutString("_entry(void)\n");
+            outFile.PutString("{\n");
+            outFile.PutString("   // fprintf(stdout, \"");
+            outFile.PutString(TempCString);
+            outFile.PutString("_entry()\\n\");\n");
+            outFile.PutString("   // fflush(stdout);\n");
+            outFile.PutString("   return 0;\n");
+            outFile.PutString("}\n");
+        }
+    }
+
+    // Add the activity functions
+    for(int jj = 0; jj < Diagram.GetNumStates(NON_SUPER_STATE); jj++)
+    {
+        if("" != Diagram.GetActivityFunction(jj))
+        {
+            TempCString = ConvertStateNumberToText(jj);
+            TempCString.MakeLower();
+            outFile.PutString("\n");
+            outFile.PutString("\n");
+            outFile.PutString("/*\n");
+            outFile.PutString(" * FSB Debug Hook Function for ");
+            outFile.PutString(TempCString);
+            outFile.PutString("_act().\n");
+            outFile.PutString(" */\n");
+            outFile.PutString("int FSM_DebugHook_");
+            outFile.PutString(TempCString);
+            outFile.PutString("_act(void)\n");
+            outFile.PutString("{\n");
+            outFile.PutString("   // fprintf(stdout, \"");
+            outFile.PutString(TempCString);
+            outFile.PutString("_act()\\n\");\n");
+            outFile.PutString("   // fflush(stdout);\n");
+            outFile.PutString("   return 0;\n");
+            outFile.PutString("}\n");
+        }
+    }
+
+    // Add the exit actions.
+    for(int jj = 0; jj < Diagram.GetNumStates(NON_SUPER_STATE); jj++)
+    {
+        if("" != Diagram.GetExitAction(jj))
+        {
+            TempCString = ConvertStateNumberToText(jj);
+            TempCString.MakeLower();
+            outFile.PutString("\n");
+            outFile.PutString("\n");
+            outFile.PutString("/*\n");
+            outFile.PutString(" * FSB Debug Hook Function for ");
+            outFile.PutString(TempCString);
+            outFile.PutString("_exit().\n");
+            outFile.PutString(" */\n");
+            outFile.PutString("int FSM_DebugHook_");
+            outFile.PutString(TempCString);
+            outFile.PutString("_exit(void)\n");
+            outFile.PutString("{\n");
+            outFile.PutString("   // fprintf(stdout, \"");
+            outFile.PutString(TempCString);
+            outFile.PutString("_exit()\\n\");\n");
+            outFile.PutString("   // fflush(stdout);\n");
+            outFile.PutString("   return 0;\n");
+            outFile.PutString("}\n");
+        }
+    }
+
+    // Add the transition actions.
+    CString stringBuffer;
+    for(int jj = 0; jj < Diagram.GetNumStates(NON_SUPER_STATE); jj++)
+    {
+        CString stateName = Diagram.GetStateName(NON_SUPER_STATE, jj);
+        for(int kk = 0; kk < Diagram.GetNumTrans(NON_SUPER_STATE, jj); kk++)
+        {
+            if("" != Diagram.GetTransActionFunctionName(NON_SUPER_STATE, jj, kk))
+            {
+                CString superStateName = Diagram.GetTransAddedBySuperState(jj, kk);
+                if("" != superStateName)
+                {
+                    stateName = superStateName;
+                }
+
+                // Output a transition action comment
+                CString functionName = Diagram.GetTransActionFunctionName(NON_SUPER_STATE, jj, kk);
+                CString commentText = "\n\n";
+                commentText += "/*\n";
+                commentText += " * FSB Debug Hook Function for ";
+                commentText += functionName;
+                commentText += "().\n";
+                commentText += " *\n";
+                commentText += " *   ";
+                commentText += stateName;
+                commentText += " to ";
+                commentText += ConvertStateNumberToText(Diagram.GetTransTargetState(NON_SUPER_STATE, jj, kk));
+                commentText += " transition action.\n";
+                commentText += " */\n";
+
+                // Output the current transition action's prototype
+                CString functionText = "int FSM_DebugHook_";
+                functionText += functionName;
+                functionText += "(void)\n";
+                functionText += "{\n";
+                functionText += "   // fprintf(stdout, \"";
+                functionText += functionName;
+                functionText += "()\\n\");\n";
+                functionText += "   // fflush(stdout);\n";
+                functionText += "   return 0;\n";
+                functionText += "}\n";
+
+                if(-1 == stringBuffer.Find(functionText))
+                {
+                    stringBuffer += commentText;
+                    stringBuffer += functionText;
+                }
+            }
+        }
+    }
+    outFile.PutString(stringBuffer);
+
+    outFile.CloseFile();
 }
