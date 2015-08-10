@@ -167,34 +167,37 @@ void UpdateConfigSourceFile(void)
 //****************************************************************************
 void OutputTimeStampAndInfo(File FileToUpdate)
 {
-// Change this to 1 to generate dummy date/time and file and file names.
-// (Useful for comparing results vs. a golden benchmark file.)
-#if (0)
-	FileToUpdate.PutString("/* Generated at hh:mm on dd/mm/yyyy using the following files:\n");
-    FileToUpdate.PutString("   ");
-    FileToUpdate.PutString(CODEGEN_VERSION_STRING);
-    FileToUpdate.PutString('\n');
-    FileToUpdate.PutString("   Model file: (ModelFile)\n");
-    FileToUpdate.PutString("   Config file: (ConfigFile) */\n\n");
-#else
-	char TempArray[50];
-    FileToUpdate.PutString("/* Generated at ");
-    FileToUpdate.PutString(_itoa(CurrentLocalTime.wHour, &TempArray[0], 10));
-    FileToUpdate.PutString(":");
-    FileToUpdate.PutString(_itoa(CurrentLocalTime.wMinute, &TempArray[0], 10));
-    FileToUpdate.PutString(" on ");
-    FileToUpdate.PutString(_itoa(CurrentLocalTime.wMonth, &TempArray[0], 10));
-    FileToUpdate.PutString("/");
-    FileToUpdate.PutString(_itoa(CurrentLocalTime.wDay, &TempArray[0], 10));
-    FileToUpdate.PutString("/");
-    FileToUpdate.PutString(_itoa(CurrentLocalTime.wYear, &TempArray[0], 10));
-    FileToUpdate.PutString(" using the following files:\n");
-    FileToUpdate.PutString("   ");
-    FileToUpdate.PutString(CODEGEN_VERSION_STRING);
-    FileToUpdate.PutString('\n');
-    FileToUpdate.PutString("   Model file: " + ModelFile.GetFileName() + '\n');
-    FileToUpdate.PutString("   Config file: " + ConfigFile.GetFileName() + " */\n\n");
-#endif
+    // Set the environment variable to generate dummy date/time and file and file names.
+    // (Useful for comparing results vs. a golden benchmark file.)
+    if (getenv("CODEGEN_TEST") != NULL)
+    {
+        FileToUpdate.PutString("/* Generated at hh:mm on dd/mm/yyyy using the following files:\n");
+        FileToUpdate.PutString("   ");
+        FileToUpdate.PutString(CODEGEN_VERSION_STRING);
+        FileToUpdate.PutString('\n');
+        FileToUpdate.PutString("   Model file: (ModelFile)\n");
+        FileToUpdate.PutString("   Config file: (ConfigFile) */\n\n");
+    }
+    else
+    {
+        char TempArray[50];
+        FileToUpdate.PutString("/* Generated at ");
+        FileToUpdate.PutString(_itoa(CurrentLocalTime.wHour, &TempArray[0], 10));
+        FileToUpdate.PutString(":");
+        FileToUpdate.PutString(_itoa(CurrentLocalTime.wMinute, &TempArray[0], 10));
+        FileToUpdate.PutString(" on ");
+        FileToUpdate.PutString(_itoa(CurrentLocalTime.wMonth, &TempArray[0], 10));
+        FileToUpdate.PutString("/");
+        FileToUpdate.PutString(_itoa(CurrentLocalTime.wDay, &TempArray[0], 10));
+        FileToUpdate.PutString("/");
+        FileToUpdate.PutString(_itoa(CurrentLocalTime.wYear, &TempArray[0], 10));
+        FileToUpdate.PutString(" using the following files:\n");
+        FileToUpdate.PutString("   ");
+        FileToUpdate.PutString(CODEGEN_VERSION_STRING);
+        FileToUpdate.PutString('\n');
+        FileToUpdate.PutString("   Model file: " + ModelFile.GetFileName() + '\n');
+        FileToUpdate.PutString("   Config file: " + ConfigFile.GetFileName() + " */\n\n");
+    }
 }
 
 //****************************************************************************
