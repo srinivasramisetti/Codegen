@@ -41,4 +41,6 @@ v35_9
 v35_10 (3 September, 2013)
 - Rebuilt using Visual Studio 2008.  The 35_9 version seems to choke on PDF files exported from the new Rhapsody version; rebuilding fixed the problem.
 
+v35_21 (10 August, 2015)
+- Added option to generate test code to support host unit testing of FSMs.
   
