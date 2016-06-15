@@ -1,3 +1,34 @@
+
+Enhancement 7: reported Everett Lumpkin
+June 15, 2016
+Mutual exclusion is messy and add a lot of un-readability to the diagrams
+Stateflow (Matlab) provides a way to force the order of evaluation, and that maps
+nicely into our fsm_config.c file.   To be investigation is how to notate this
+and pass it to the .RTF file
+
+
+Enhancement 6: reported: Everett Lumpkin
+June 15, 2016
+Allow == in addition to = in transition lines
+Why?   Rhapsody native generation uses ==
+
+Enhancement 5: reported: Everett Lumpkin
+June 15, 2016
+Add diagnosis for supergroup and internal exits where transition = TRUE
+Reference: PPR029928, PPR029931, PPR029932, PPR029935, 
+D:\projects\Proteus\Docs\State Machine Analysis Looking for Super State Conditional Transitions.xlsx
+
+Enhancement 4: reported: Everett Lumpkin
+June 15, 2016
+Allow to be command line driven, i.e. from a makefile
+Allow build server.
+For bonus points figure out how to automate Rhapsody to generate the .rtf file
+
+Issue 3: reported: Mathew Gervais
+June 15, 2016
+Description field with missing ActivityFunction - Reports a strange error about
+"} state"
+
 Issue 1: reported: Paul Kiningham
 June 10, 2003
 Found when using V31 of codegen, by moving transitions from one state to another,
@@ -7,6 +38,7 @@ Codegen 31 reports that the number of states in the config file do not match
 the number in the model. When looking through the model text file, there are 
 transitions without targets listed.  To correct this, delete the transition
 and redraw it.
+   June 15,  2016 - Paul thinks this is really an old Rhapsody issue.  Fixed?  (Not seen in recent history)
 
 January 15, 2004
 An issue was encountered where the text "Target:" is missing from the model text
@@ -14,3 +46,5 @@ file where there is a transition with a transition action.  The model text file
 contains the transition conditions, the transition action, and the target state name
 but does not contain the text "Target:".  Codegen 32 reports that state ... is not
 found in the configuration file.  To correct this, delete the transition and redraw it.
+   June 15, 2016: Likely fixed when generation switched to .rtf file???
+
