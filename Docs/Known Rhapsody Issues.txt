@@ -1,4 +1,11 @@
 
+Enhancement 8: reported Everett Lumpkin, Paul Kiningham
+July 29,2016
+In many of our equipment control projects there are two history_fsm.  The reason
+is because of limitation of number of timers.  Paul suggests:
+   fsm should support an unlimited number of timers that do not affect the number of bits in the 32 bit input word
+
+
 Enhancement 7: reported Everett Lumpkin
 June 15, 2016
 Mutual exclusion is messy and add a lot of un-readability to the diagrams
