@@ -1,4 +1,13 @@
 
+Problem 9: Reported Everett Lumpkin, Mike Malone
+20-Apr-2017
+Not really an issue with codegen, but an issue with the fsm.c
+See PPR029699 for the full email thread, but the synopsys is extra ticks:
+   The change is to NOT restart the timer on the entry to each function, but 
+   rather restart it in the transition function.  Does that get rid of all the 
+   "extra" cycles?
+
+
 Enhancement 8: reported Everett Lumpkin, Paul Kiningham
 July 29,2016
 In many of our equipment control projects there are two history_fsm.  The reason
