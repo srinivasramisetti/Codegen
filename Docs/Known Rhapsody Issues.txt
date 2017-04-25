@@ -39,6 +39,9 @@ June 15, 2016
 Allow to be command line driven, i.e. from a makefile
 Allow build server.
 For bonus points figure out how to automate Rhapsody to generate the .rtf file
+Mike figured this out: https://www.ibm.com/support/knowledgecenter/en/SSB2MU_7.5.3/com.ibm.rhapsody.reference.doc/topics/rhp_r_ref_rhp_coml_usage.html
+   This generated an RTF report (bigger than our usual one, probably because it includes more by default – I think we usually uncheck several boxes when do generate the RTF manually):
+   D:\projects\BING\E4.SoftwareDesign\BleTask\BING_BLE_Rhapsody_Model>"C:\Program Files (x86)\IBM\Rational\Rhapsody\8.1.2\rhapsody.exe" -cmd=open BleTask.rpy -cmd=report RTF myReport.rtf -cmd=exit
 
 Issue 3: reported: Mathew Gervais
 June 15, 2016
